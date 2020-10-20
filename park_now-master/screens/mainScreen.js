@@ -7,7 +7,6 @@ import {Title} from "react-native-paper";
 
 import Home from "./home";
 import ProfilScreen from "./ProfilScreen";
-import Notification from './NotificationScreen';
 import SettingScreen from "./SettingScreen";
 import PaymentScreen from "./PaymentScreen";
 
@@ -190,50 +189,6 @@ function PaymentStackScreen({navigation}) {
 }
 
 
-
-const notificationStack = createStackNavigator();
-
-function notifStack({navigation}) {
-  return (
-    <notificationStack.Navigator
-    screenOptions ={{
-      headerStyle:{
-          backgroundColor:"#00457C",   
-          //borderBottomRightRadius:80,
-          height:55,
-      },
-      
-      headerTitleAlign: 'center',
-      headerShown: true,
-      headerTintColor:"#99d4e9",
-      headerTitleStyle:{
-        //  fontWeight:"bold"
-      }
-
-   }}
-    >
-      <notificationStack.Screen name="Notification" component={ Notification}  options={{
-    headerLeft: () => (
-      <View style={{marginLeft: 20}}>
-        <Icon.Button
-          name="navicon"
-          size={25}
-          color='#99d4e9'
-          backgroundColor="#00457C"
-          onPress={() => navigation.toggleDrawer()}
-        />
-      </View>
-    ),}}/>
-     
-    </notificationStack.Navigator>
-  );
-}
-
-
-
-
-
-
 const Tab = createMaterialBottomTabNavigator();
 
 export default function MainScreen({navigation}) {
@@ -263,17 +218,7 @@ export default function MainScreen({navigation}) {
             }}
             />
         
-        <Tab.Screen
-            name="Notifications"
-            component={notifStack}
-            options={{
-                tabBarLabel: 'Notifications',
-                tabBarColor:"#00457C",
-                tabBarIcon: ({ color }) => (
-                <Icon name="bell" color={color} size={26} />
-                ),
-            }}
-            />
+    
 
          <Tab.Screen
             name="Profile"
@@ -306,7 +251,7 @@ export default function MainScreen({navigation}) {
                 tabBarColor:"#00457C",
                 
                 tabBarIcon: ({ color }) => (
-                    <Icon name="gear" color={color} size={26} />
+                    <Icon name="clock-o" color={color} size={28} />
                     ),
                
             }}

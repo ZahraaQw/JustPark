@@ -23,7 +23,6 @@ const CreatePark=({navigation})=>{
           headerTitleStyle:{
           },
          
-          initialRouteName="Park Car"
 
        }}
      
@@ -42,18 +41,7 @@ const CreatePark=({navigation})=>{
           </View>
         ),}}/>
          <ParkStack.Screen name="available slots" component={Slots}
-           options={{
-            headerLeft: () => (
-              <View style={{marginLeft: 20}}>
-                <Icon.Button
-                  name="chevron-left"
-                  size={25}
-                  color='#ebf7fc'
-                  backgroundColor="#00457C"
-                  onPress={() => navigation.goBack()}
-                />
-              </View>
-            ),}}
+          
          />
          <ParkStack.Screen name="available Parking" component={Parking} />
 

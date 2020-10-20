@@ -23,7 +23,7 @@ const ParkCar=({navigation})=>{
         } else {
           const selectedTime = selectedValue;
           setTime(selectedTime);
-          setMode('date');
+        //  setMode('date');
         }
       };
   

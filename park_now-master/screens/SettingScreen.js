@@ -1,14 +1,37 @@
 
 import React, {useState} from 'react';
 
-import {Text,View,StyleSheet,Alert,TouchableOpacity} from 'react-native';
+import {View,Text,StyleSheet,TouchableOpacity,ScrollView,Modal, Button,Alert} from 'react-native';
 import CountDown from 'react-native-countdown-component';
-import ExtendDuration from './ExtendDuration';
+import { IconButton, Colors } from 'react-native-paper';
+import { TouchableHighlight } from 'react-native-gesture-handler';
+import FontAwesome from 'react-native-vector-icons/dist/FontAwesome';
+
+//import ExtendDuration from './ExtendDuration';
+let timeSec=0;
 
 const SettingScreen=({navigation})=>{
     const [totalDuration, setTotalDuration] = useState(10);
     const [isFinished,setIsFinished] = useState(false);
-    let timeSec;
+    const [priceModalOpen, setPriceModaleOpen] = useState(false);
+    const [soltPrice, setslotPrice]=useState(0);
+    const[disableOk, setdisableOk] = useState(true);
+    const[extendsId, setextendsId]=useState(-1);
+   
+
+    const[colorbtn0, setcolorbtn0]=useState("#445454");
+    const[colorbtn1, setcolorbtn1]=useState("#445454");
+    const[colorbtn2, setcolorbtn2]=useState("#445454");
+    const[colorbtn3, setcolorbtn3]=useState("#445454");
+    const[colorbtn4, setcolorbtn4]=useState("#445454");
+    const[colorbtn5, setcolorbtn5]=useState("#445454");
+ 
+    const[isDisabled0,setisDisabled0]=useState(false);
+    const[isDisabled1,setisDisabled1]=useState(false);
+    const[isDisabled2,setisDisabled2]=useState(false);
+    const[isDisabled3,setisDisabled3]=useState(false);
+    const[isDisabled4,setisDisabled4]=useState(false);
+    const[isDisabled5,setisDisabled5]=useState(false);
 
      const cancleTimer=()=>{
         Alert.alert(
@@ -29,31 +52,310 @@ const SettingScreen=({navigation})=>{
             { cancelable: false }
           );
      }
-      const updateTime=(h,m)=>{
-        timeSec= h*60*60 + m*60;
-        setTotalDuration(timeSec);
+    
 
-        Alert.alert(
-            'Alert Title',
-            'Are you sure that you want to extends reservation',
-            [
-           
-              {
-                text: 'Cancel',
-                onPress: () => console.log('Cancel Pressed'),
-                style: 'cancel'
-              },
-              { text: 'OK', onPress: () =>{
-                console.log(timeSec);  
-                setTotalDuration(timeSec);
-               } }
-            ],
-            { cancelable: false }
-          );
+    const bookSlot=(id,price)=>{
        
-    }
+      
+      if(extendsId ==0){setTotalDuration(1800)}
+      else  if(extendsId ==1){setTotalDuration(3600)}
+      else  if(extendsId ==2){setTotalDuration(5400)}
+      else  if(extendsId ==3){setTotalDuration(7200)}
+      else  if(extendsId ==4){setTotalDuration(9000)}
+      else  if(extendsId ==5){setTotalDuration(10800)}
+        
+      setslotPrice(price); 
+      setextendsId(id);
+      if(id == 0){
+          setcolorbtn0("green");
+          setdisableOk(false);
+          setisDisabled1(true);
+          setisDisabled2(true);
+          setisDisabled3(true);
+          setisDisabled4(true);
+          setisDisabled5(true);
+          timeSec=18;
+
+        
+      }
+      else if(id == 1){
+          setcolorbtn1("green");
+          setdisableOk(false);
+          setisDisabled0(true);
+          setisDisabled2(true);
+          setisDisabled3(true);
+          setisDisabled4(true);
+          setisDisabled5(true);
+          timeSec=36;
+
+
+      }
+
+      else if(id == 2){
+          setdisableOk(false);
+          setcolorbtn2("green");
+          setisDisabled0(true);
+          setisDisabled1(true);
+          setisDisabled3(true);
+          setisDisabled4(true);
+          setisDisabled5(true);
+          timeSec=54;
+
+
+          }
+
+      else if(id == 3){
+          setcolorbtn3("green");
+          setdisableOk(false);
+          setisDisabled0(true);
+          setisDisabled1(true);
+          setisDisabled2(true);
+          setisDisabled4(true);
+          setisDisabled5(true);
+          timeSec=72;
+
+      }
+
+      else if(id == 4){
+          setcolorbtn4("green");
+          setdisableOk(false);
+          setisDisabled0(true);
+          setisDisabled1(true);
+          setisDisabled2(true);
+          setisDisabled3(true);
+          setisDisabled5(true);
+          timeSec=90;
+
+      }
+
+      else if(id == 5){
+          setcolorbtn5("green");
+          setdisableOk(false);
+          setisDisabled0(true);
+          setisDisabled1(true);
+          setisDisabled2(true);
+          setisDisabled3(true);
+          setisDisabled4(true);
+          timeSec=108;
+
+      }
+  }
+
+  const CancleBook=()=>{
+
+    setcolorbtn0("#445454");
+    setcolorbtn1("#445454");
+    setcolorbtn2("#445454");
+    setcolorbtn3("#445454");
+    setcolorbtn4("#445454");
+    setcolorbtn5("#445454");
+  
+    setdisableOk(true);
+   setisDisabled0(false);     
+    setisDisabled1(false);
+    setisDisabled2(false);
+    setisDisabled3(false);
+    setisDisabled4(false);
+    setisDisabled5(false);
+   }
+   const confirmBook=()=>{
+    Alert.alert(
+        'Alert Title',
+        'Confirm  choosed booking duration ',
+        [
+       
+          {
+            text: 'Cancel',
+            style: 'cancel'
+          },
+          { text: 'OK', onPress: () =>{ 
+           setPriceModaleOpen(false);
+           console.log(timeSec);
+           setTotalDuration(timeSec);
+      
+            } }
+        ],
+        { cancelable: false }
+      );
+  }
     return(
+
     <View  style={ styles.container }>
+
+<Modal  visible={priceModalOpen} animationType="slide">
+             <ScrollView style={styles.ModalContent}>
+             <IconButton 
+               style={styles.modalToggle}
+               icon="close"
+               color="#00457C"
+               size={20}
+               onPress={() =>setPriceModaleOpen(false)}
+           />
+           <View>
+               <Text style={{margin:10,marginLeft:80,fontSize:16,color:"#0b2f4d"}}>Choose booking duration</Text>
+               <TouchableHighlight style={styles.priceContainer}>
+                  <ScrollView>
+                      <View style={{flexDirection:"row"}}>
+                          <Text style={styles.PriceTxt}>30  minutes</Text>
+                          <FontAwesome
+                          style={{
+                              paddingTop:20
+                          }}
+                            name="long-arrow-right"
+                            color="#445454"
+                            size={26}
+                        />
+                         <Text style={styles.PriceTxt}>{10} Ponits</Text>
+                         <IconButton 
+                          color={colorbtn0}  
+                          icon="checkbox-multiple-marked-circle"
+                          size={35}
+                          disabled={isDisabled0}
+                        
+                          onPress={()=>{bookSlot(0,10);}}
+
+                        />
+
+                      </View>
+
+                      <View style={{flexDirection:"row"}}>
+                          <Text style={styles.PriceTxt}>60  minutes</Text>
+                          <FontAwesome
+                          style={{
+                              paddingTop:20
+                          }}
+                            name="long-arrow-right"
+                            color="#445454"
+                            size={26}
+                        />
+
+                        
+                         <Text style={styles.PriceTxt}>{20} Ponits</Text>
+
+                         <IconButton 
+                          color={colorbtn1}  
+                          icon="checkbox-multiple-marked-circle"
+                          disabled={isDisabled1}
+                          size={35}
+                          onPress={()=>{bookSlot(1,20)}}
+
+                        />
+                    
+                      </View>
+
+                      <View style={{flexDirection:"row"}}>
+                          <Text style={styles.PriceTxt}>90  minutes</Text>
+                          <FontAwesome
+                          style={{
+                              paddingTop:20
+                          }}
+                            name="long-arrow-right"
+                            color="#445454"
+                            size={26}
+                        />
+
+                        
+                         <Text style={styles.PriceTxt}>{30} Ponits</Text>
+                         <IconButton 
+                          color={colorbtn2}  
+                          icon="checkbox-multiple-marked-circle"
+                          disabled={isDisabled2}
+                          size={35}
+                          onPress={()=>{bookSlot(2,30)}}
+
+                        />
+                      </View>
+
+                      <View style={{flexDirection:"row"}}>
+                          <Text style={styles.PriceTxt}>120 minutes</Text>
+                          <FontAwesome
+                          style={{
+                              paddingTop:20
+                          }}
+                            name="long-arrow-right"
+                            color="#445454"
+                            size={26}
+                        />
+
+                        
+                         <Text style={styles.PriceTxt}>{40} Ponits</Text>
+                         <IconButton 
+                          color={colorbtn3}  
+                          icon="checkbox-multiple-marked-circle"
+                          disabled={isDisabled3}
+                          size={35}
+                          onPress={()=>{bookSlot(3,40)}}
+
+                        />
+                      </View>
+                     
+                      <View style={{flexDirection:"row"}}>
+                          <Text style={styles.PriceTxt}>150 minutes</Text>
+                          <FontAwesome
+                          style={{
+                              paddingTop:20
+                          }}
+                            name="long-arrow-right"
+                            color="#445454"
+                            size={26}
+                        />
+
+                        
+                         <Text style={styles.PriceTxt}>{50} Ponits</Text>
+                         <IconButton 
+                          color={colorbtn4}  
+                          icon="checkbox-multiple-marked-circle"
+                          disabled={isDisabled4}
+                          size={35}
+                          onPress={()=>{bookSlot(4,50)}}
+
+                        />
+                      </View>
+                       
+
+                      <View style={{flexDirection:"row"}}>
+                          <Text style={styles.PriceTxt}>180 minutes</Text>
+                          <FontAwesome
+                          style={{
+                              paddingTop:20
+                          }}
+                            name="long-arrow-right"
+                            color="#445454"
+                            size={26}
+                        />
+
+                        
+                         <Text style={styles.PriceTxt}>{60} Ponits</Text>
+                         <IconButton 
+                          color={colorbtn5}  
+                          icon="checkbox-multiple-marked-circle"
+                          disabled={isDisabled5}
+                          size={35}
+                          onPress={()=>{bookSlot(5,20)}}
+
+                        />
+                      </View>
+
+                      <View>
+                         
+
+                      </View>
+                  </ScrollView>
+                     
+               </TouchableHighlight>
+               <View style={{marginBottom:10,marginTop:10,marginLeft:50,marginRight:50}}>
+               <Button title="cancle" color="#00457C"
+               onPress={()=>{CancleBook();  setslotPrice(0); }}/>
+               </View>
+                <View style={{marginLeft:50,marginRight:50}}>
+                <Button title="ok"  color="#00457C"  disabled={disableOk}
+                onPress={()=>{confirmBook();CancleBook()}}
+                />
+                </View>
+           </View>
+
+        </ScrollView>
+        </Modal>
         <View style={{flexDirection:'row'}}>
         <Text style={styles.titleSt}>Slot ID   13</Text>
         
@@ -104,8 +406,21 @@ const SettingScreen=({navigation})=>{
          size={21}
        />
        </View>
-       <ExtendDuration  triggerParentUpdate={updateTime} stope={cancleTimer} finish={isFinished}/>
-    
+
+       <Text
+           style={{
+               fontSize:16,
+               color:"#00457C",
+               marginTop:20,
+               marginLeft:95
+           }}
+          >Extends booking time</Text>
+          <TouchableOpacity
+          style={styles.button}
+          onPress={() =>{setPriceModaleOpen(true);}}
+          >
+           <Text style={styles.buttonText}>00:00</Text>
+          </TouchableOpacity>
 
       </View>
 
@@ -128,14 +443,59 @@ const styles = StyleSheet.create({
        fontSize:25,
        fontFamily:'BungeeInline-Regular',
     },
-   
-
-   
-
+     
+    button: {
+      backgroundColor: "#00457C",
+      opacity:0.9,
+      marginTop:20,
+      marginBottom:30,
+      paddingVertical:20,
+      marginHorizontal:75,
+      //paddingHorizontal:80,
+      borderRadius: 3,
+      marginVertical: 10,
+      alignItems:"center",
+      justifyContent:"center",
+    },
+    buttonText: {
+      color: "#FFFFFF",
+      fontSize: 16,
+      fontWeight: "600"
+    },
+  
     timer_stl:{
         marginTop:2,
     },
+       
+    priceContainer:{
+      borderWidth:2,
+      borderColor:"#00457C",
+      backgroundColor:"#fff",
+      marginLeft:20,
+      marginRight:20,
+      paddingHorizontal:20,
+      paddingTop:10,
+      height:390,
+      marginBottom:10,
+   },
+
+   PriceTxt:{
+    fontFamily:'Courgette-Regular',
+   paddingLeft:3,
+    paddingRight:5,
+    marginRight:5,
+    color:"#445454",
+    fontSize:15,
+    paddingTop:20
+ },
    
+
+ modalToggle:{
+  marginTop:20,
+  backgroundColor:'#99d4e9',    
+  padding:2,
+  alignSelf:'center'
+},
 
 });
 

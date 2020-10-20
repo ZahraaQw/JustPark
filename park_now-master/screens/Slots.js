@@ -103,6 +103,10 @@ const Slots=({navigation})=>{
     setModaleOpen(false);
   }
 
+  const ChnageSlotColor=()=>{
+    
+  }
+
   const confirmBook=()=>{
     Alert.alert(
         'Alert Title',
@@ -222,11 +226,19 @@ const Slots=({navigation})=>{
                 <Text>Entrance</Text>
              </View>
          <View style={styles.left_btn}>
-            <Text style={{ transform:[{rotate:"90deg"}]}}>Left Building</Text>
+            <Text style={{ transform:[{rotate:"90deg"}],paddingTop:250,
+            width:300,//position:'absolute',
+           marginTop:80,
+            }}>
+           _          Left Building         _</Text>
          </View>
          
          <View style={styles.right_btn}>
-            <Text style={{ transform:[{rotate:"90deg"}]}}>Right Building</Text>
+           <Text style={{ transform:[{rotate:"90deg"}],
+          paddingTop:250,
+          width:300,//position:'absolute',
+         marginTop:80,
+        }}>_            Right Building         _</Text>
          </View>
          <Modal  visible={priceModalOpen} animationType="slide">
              <ScrollView style={styles.ModalContent}>
@@ -479,14 +491,17 @@ const Slots=({navigation})=>{
           </View>
               
           <View style={styles.middle_btn}>
-            <Text style={{ transform:[{rotate:"90deg"}]}}>Center Street</Text>
+            <Text style={{ transform:[{rotate:"90deg"}],
+              paddingTop:250,
+              width:300,//position:'absolute',
+             marginTop:80,}}>_           Center Street         _</Text>
          </View>  
         </ ScrollView>
 
       <View style={styles.Footer}>
-        <Text style={styles.text}>Empty: {Empty=(slotinfo.filter(item=>item.isAvaliable).length)} </Text>     
+        <Text style={styles.text}>Empty: {Empty=(slotinfo.filter(item=>item.isAvaliable).length+rightSlots.filter(item=>item.isAvaliable).length)} </Text>     
         
-        <Text style={styles.text}> Reserve: {Reserve= slotinfo.length-Empty} </Text> 
+        <Text style={styles.text}> Reserve: {Reserve= (slotinfo.length+rightSlots.length)-Empty} </Text> 
       </View>
     </View>
       );
@@ -609,9 +624,10 @@ const styles = StyleSheet.create({
        position:'absolute',
        backgroundColor:"#678691",
        opacity:0.4,
-       paddingVertical:200,
+       height:440,
+    //   paddingVertical:200,
        width:50,
-       marginTop:80,
+       marginTop:70,
 
         
       
@@ -621,9 +637,11 @@ const styles = StyleSheet.create({
       position:'absolute',
       backgroundColor:"#678691",
       opacity:0.4,
-      paddingVertical:200,
+      height:440,
+
+     // paddingVertical:200,
       width:50,
-      marginTop:80,
+      marginTop:70,
       marginLeft:310,
  
      },
@@ -631,9 +649,11 @@ const styles = StyleSheet.create({
       position:'absolute',
       backgroundColor:"#678691",
       opacity:0.4,
-      paddingVertical:200,
+      height:440,
+
+     // paddingVertical:200,
       width:50,
-      marginTop:80,
+      marginTop:70,
       marginLeft:155,
      },
 
