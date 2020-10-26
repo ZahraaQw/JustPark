@@ -16,10 +16,12 @@ import FindPosition from './Find';
 import FindMyPosition from './FindMyPosition';
 import ParkingHistory from './ParkingHistory';
 const Drawer = createDrawerNavigator();
-const App2 =({navigation})=>{
+const App2 =(props)=>{
+     
+    let email= props.email;
     return(
 
-        <Drawer.Navigator drawerContent={props=><DrawerContent{...props}/>}
+        <Drawer.Navigator drawerContent={props=><DrawerContent {...props}   recivedEmail={email}/>}
 
            drawerContentOptions={
                {
@@ -32,12 +34,13 @@ const App2 =({navigation})=>{
              backgroundColor:"#ebf6fa",
          
             }
-           
+           //recivedEmail={props.email}
         }
         
         
         >
-           <Drawer.Screen name="HomeStackScreen" component={HomeStackScreen} />
+
+           <Drawer.Screen name="HomeStackScreen"  component={HomeStackScreen}/>
            <Drawer.Screen name="Exit" component={ExitQr }  />
            <Drawer.Screen name="Enter" component={EnterQr } />
            <Drawer.Screen name="Find" component={Find } />

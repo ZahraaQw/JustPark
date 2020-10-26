@@ -1,33 +1,40 @@
 import React, { Component } from 'react';
 import LinearGradient from 'react-native-linear-gradient';
-import {Text,View,StyleSheet, TextInput, Animated, TouchableOpacity,Dimensions, Button,ScrollView} from 'react-native';
+import {Text,View,StyleSheet, TextInput, Animated, TouchableOpacity,Dimensions, Alert,Button,ScrollView} from 'react-native';
 import { TypingAnimation } from 'react-native-typing-animation';
 import FontAwesome from 'react-native-vector-icons/dist/FontAwesome';
 import * as Animatable from 'react-native-animatable';
 
 
 class SignInScreen extends Component{
-
+  
 
     constructor(props) {
         super(props);
         this.state = { 
-            typing_user:false,
+            typing_email:false,
             typing_pass:false,
             animation_login:new Animated.Value(width-120),
             enable:true,
-            isValidUser:true,
+             isValidEmail:true,
             isValidPassword:true,
-            disabled_press:false,
+
+            good_pass:false,
+            good_email:false,
+            disabled_press:true,
+           // UserName: '',
+            UserEmail: '',
+            UserPassword: '',
+            isLogin: true,
          };
     }
       
     _foucus(value){
       
-  if(value=="user"){
+  if(value=="email"){
                 this.setState(
                     {
-                        typing_user:true,
+                        typing_email:true,
                         typing_pass:false,
                     
                     }
@@ -37,14 +44,15 @@ class SignInScreen extends Component{
             else  if(value=="pass"){
                 this.setState(
                     {
-                        typing_user:false,
+                        typing_email:false,
                         typing_pass:true,
                     
                     }
                 )
             }
 
-           
+        
+            
      
     }
 
@@ -66,61 +74,125 @@ class SignInScreen extends Component{
       
       }
       _animation(){
+           
           Animated.timing(
-              this.state.animation_login,{
+             this.state.animation_login,{
                   toValue:50,
-                  duration:250
+                  duration:5000,
               }
+
+            
           ).start();
     
           setTimeout(()=>{
               this.setState({
                   enable:false,
-                  typing_user:false,
+                  typing_email:false,
                   typing_pass:false,
               })
-          },150);
-      }
+          },5000);
+     
+    }
       validate(text,type){
 
 
         alph =/^[a-zA-Z]+$/
         num =/^[0-9a-zA-Z]+$/
-       if(type=='username'){
-        if(alph.test(text))
-        {
-          this.setState({
-            isValidUser:true,
-          })
-        }
-        else{
+        email=/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
 
-            this.setState({
-                isValidUser:false,
-            })
-        } 
-       }
-       else if(type=='password'){
+    
+        if(type=='password'){
         if((num.test(text))&& (text.trim().length >7))
         {
           this.setState({
             isValidPassword:true,
+            good_pass:true,
+          
           })
+
+
         }
         else{
 
             this.setState({
                 isValidPassword:false,
+                good_pass:true
             })
         }
        }
        
-
-
+       else  if(type=='email'){
+        if(email.test(text))
+        {
+        this.setState({
+            isValidEmail:true,
+            good_email:true,
+        })
+        }
+        else{
+            this.setState({
+                isValidEmail:false,
+                good_email:false
+            })
+        } 
+    }
     }
 
+ 
+      UserRegistrationFunction = () =>{
+ 
+        fetch('http://192.168.1.157/php_parkProj/LogIn.php', {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+        
+          //  name: this.state.UserName,
+        
+            email: this.state.UserEmail,
+        
+            password: this.state.UserPassword
+        
+          })
+        
+        }).then((response) => response.json())
+              .then((responseJson) => {
+        
+        // Showing response message coming from server after inserting records.
+               // Alert.alert(responseJson);
 
+               if(responseJson == 'Login success'){
+                         Alert.alert(
+                            'Message',
+                            'Login done successfully!! welcom in parkNow  ',
+                            
+                            [
+                           
+                              { text: 'OK', onPress: () =>{ 
+                                this.props.sendEmail(this.state.UserEmail)
+                                this.props.openHome()
+                                     
+                                } }
+                            ],
+                            { cancelable: false }
+                          )
+                    
 
+               }
+               else  if(responseJson == 'Login Error'){
+     
+                   Alert.alert("User name or password is incorrect");
+
+               }
+        
+              }).catch((error) => {
+                console.error(error);
+              });
+       
+      }
+     
   
     render(){
         const width= this.state.animation_login;
@@ -143,34 +215,33 @@ class SignInScreen extends Component{
          
             
             <View style={styles.action}>
-                   <View style={{flexDirection:"row"}}>
+                  
                      <FontAwesome
-                            name="user-o"
-                            color="#05345a"
+                       
+                       name="envelope-o"
+                         color="#05345a"
                             size={24}
                             style={{paddingTop:60,paddingEnd:10}}
                         
                         />
                  <TextInput
                     style={{ height:50, width:250,borderColor: 'gray', borderWidth: 1 ,borderRadius:5,marginTop:50,fontSize:14}}
-                    placeholder=" Enter User Name "
-                    onFocus={()=>this._foucus("user")}
-                    onChangeText={(text)=>this.validate(text,'username')}/>
+                    placeholder="Enter your email"
+                    onFocus={()=>this._foucus("email")}
+                    onChangeText={(text)=>{this.validate(text,'email');this.setState({ UserEmail: text})}}/>
     
-                  {this.state.typing_user ?
-                  this._typing()
-                  :null }
+              
                  </View>       
                     
-                    {this.state.isValidUser ? null :  
-                        <Animated.View
-                        animation="fadeInLeft" duration={500}> 
-                    <Text style={styles.ErrMsg}>UserName must be  just character</Text>
-                    </Animated.View>
+                    {this.state. isValidEmail ? null :  
+                       <Animated.View
+                       animation="fadeInLeft" duration={500}> 
+                   <Text style={styles.ErrMsg}>Email must follow Email format.</Text>
+                   </Animated.View>
                     }
-                    </View>
+                 
              <View style={styles.action}>
-                 <View style={{flexDirection:"row"}}>
+                
              <FontAwesome
                  name="lock"
                  color="#05345a"
@@ -183,12 +254,9 @@ class SignInScreen extends Component{
                    style={{ height:50, width:250,borderColor: 'gray', borderWidth: 1 ,borderRadius:5,marginTop:10,fontSize:12}}
                     placeholder="********"
                     onFocus={()=>this._foucus("pass")}
-                    onChangeText={(text)=>this.validate(text,'password')}
+                    onChangeText={(text)=>{this.validate(text,'password');this.setState({UserPassword : text})}}
                    />
-                        
-                {this.state.typing_pass ?
-                 this._typing()
-                  :null }
+              
             </View>
                 {this.state.isValidPassword ? null : 
                     <Animated.View
@@ -197,19 +265,23 @@ class SignInScreen extends Component{
                         <Text style={styles.ErrMsg}>Password must be 8 long   . </Text>
                         </Animated.View>
                  }
-                 </View>
+                
                  </ScrollView>
             <View>
                <Text style={{color:"#00457C" ,fontSize:12,marginBottom:30,marginTop:18,marginLeft:36}} 
                onPress={()=>this.props.navigation.navigate("Forget Password")}>Forgot Password ?</Text>
            </View>
             <TouchableOpacity
-            style={{ opacity:this.state.disabled_press ? 0.5 : 1 }}
-            disabled={this.state.disabled_press}
-            onPress={()=>this._animation()} >
+            style={{ opacity:!(this.state.good_email && this.state.good_pass) ? 0.5 : 1 }}
+            disabled={!(this.state.isValidEmail && this.state.isValidPassword)}
+
+            onPress={()=>{this.UserRegistrationFunction();}}
+
+             
+            >
            
            <View style={styles.Butt_cont}>
-               <Animated.View style={[styles. anmation,{width}]}>
+               <Animated.View style={[styles.anmation,{width}]}>
                 {this.state.enable?
                <Text style={styles.logText}>Sign In</Text>
                :
@@ -225,12 +297,10 @@ class SignInScreen extends Component{
   
          <View style={styles.signUp}>
                <Text style={{color:'black'}}> New User? </Text>
-               <Text style={{color:'#f7c202'}} onPress={()=>this.props.navigation.navigate("Sing Up")}>Sign Up?</Text>
+               <Text style={{color:'#f7c202'}} onPress={()=>{this.props.navigation.navigate("Sing Up")}}>Sign Up?</Text>
               
 
            </View>
-
-
            </Animatable.View >
            </ScrollView>
         </View>
@@ -341,7 +411,10 @@ const width = Dimensions.get('window').width;
              fontSize:14
          },
          ErrMsg:{
+            
             color:"red",
+            marginLeft:35,
+            fontSize:10
                      
 
 

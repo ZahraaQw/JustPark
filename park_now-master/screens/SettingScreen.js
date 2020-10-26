@@ -56,13 +56,6 @@ const SettingScreen=({navigation})=>{
 
     const bookSlot=(id,price)=>{
        
-      
-      if(extendsId ==0){setTotalDuration(1800)}
-      else  if(extendsId ==1){setTotalDuration(3600)}
-      else  if(extendsId ==2){setTotalDuration(5400)}
-      else  if(extendsId ==3){setTotalDuration(7200)}
-      else  if(extendsId ==4){setTotalDuration(9000)}
-      else  if(extendsId ==5){setTotalDuration(10800)}
         
       setslotPrice(price); 
       setextendsId(id);
@@ -74,7 +67,7 @@ const SettingScreen=({navigation})=>{
           setisDisabled3(true);
           setisDisabled4(true);
           setisDisabled5(true);
-          timeSec=18;
+         // timeSec=18;
 
         
       }
@@ -86,7 +79,7 @@ const SettingScreen=({navigation})=>{
           setisDisabled3(true);
           setisDisabled4(true);
           setisDisabled5(true);
-          timeSec=36;
+          //timeSec=36;
 
 
       }
@@ -99,7 +92,7 @@ const SettingScreen=({navigation})=>{
           setisDisabled3(true);
           setisDisabled4(true);
           setisDisabled5(true);
-          timeSec=54;
+         // timeSec=54;
 
 
           }
@@ -112,7 +105,7 @@ const SettingScreen=({navigation})=>{
           setisDisabled2(true);
           setisDisabled4(true);
           setisDisabled5(true);
-          timeSec=72;
+         // timeSec=72;
 
       }
 
@@ -124,7 +117,7 @@ const SettingScreen=({navigation})=>{
           setisDisabled2(true);
           setisDisabled3(true);
           setisDisabled5(true);
-          timeSec=90;
+         // timeSec=90;
 
       }
 
@@ -136,13 +129,13 @@ const SettingScreen=({navigation})=>{
           setisDisabled2(true);
           setisDisabled3(true);
           setisDisabled4(true);
-          timeSec=108;
+        //  timeSec=108;
 
       }
   }
 
   const CancleBook=()=>{
-
+    setTotalDuration(0)
     setcolorbtn0("#445454");
     setcolorbtn1("#445454");
     setcolorbtn2("#445454");
@@ -170,8 +163,8 @@ const SettingScreen=({navigation})=>{
           },
           { text: 'OK', onPress: () =>{ 
            setPriceModaleOpen(false);
-           console.log(timeSec);
-           setTotalDuration(timeSec);
+          // console.log(timeSec);
+          // setTotalDuration(timeSec);
       
             } }
         ],
@@ -196,7 +189,7 @@ const SettingScreen=({navigation})=>{
                <TouchableHighlight style={styles.priceContainer}>
                   <ScrollView>
                       <View style={{flexDirection:"row"}}>
-                          <Text style={styles.PriceTxt}>30  minutes</Text>
+                          <Text style={styles.PriceTxt}>15  minutes</Text>
                           <FontAwesome
                           style={{
                               paddingTop:20
@@ -212,14 +205,14 @@ const SettingScreen=({navigation})=>{
                           size={35}
                           disabled={isDisabled0}
                         
-                          onPress={()=>{bookSlot(0,10);}}
+                          onPress={()=>{bookSlot(0,10);setTotalDuration(900)}}
 
                         />
 
                       </View>
 
                       <View style={{flexDirection:"row"}}>
-                          <Text style={styles.PriceTxt}>60  minutes</Text>
+                          <Text style={styles.PriceTxt}>30  minutes</Text>
                           <FontAwesome
                           style={{
                               paddingTop:20
@@ -237,14 +230,14 @@ const SettingScreen=({navigation})=>{
                           icon="checkbox-multiple-marked-circle"
                           disabled={isDisabled1}
                           size={35}
-                          onPress={()=>{bookSlot(1,20)}}
+                          onPress={()=>{bookSlot(1,20);setTotalDuration(1800)}}
 
                         />
                     
                       </View>
 
                       <View style={{flexDirection:"row"}}>
-                          <Text style={styles.PriceTxt}>90  minutes</Text>
+                          <Text style={styles.PriceTxt}>45  minutes</Text>
                           <FontAwesome
                           style={{
                               paddingTop:20
@@ -261,13 +254,13 @@ const SettingScreen=({navigation})=>{
                           icon="checkbox-multiple-marked-circle"
                           disabled={isDisabled2}
                           size={35}
-                          onPress={()=>{bookSlot(2,30)}}
+                          onPress={()=>{bookSlot(2,30);setTotalDuration(2700)}}
 
                         />
                       </View>
 
                       <View style={{flexDirection:"row"}}>
-                          <Text style={styles.PriceTxt}>120 minutes</Text>
+                          <Text style={styles.PriceTxt}> 1    hour  </Text>
                           <FontAwesome
                           style={{
                               paddingTop:20
@@ -278,19 +271,19 @@ const SettingScreen=({navigation})=>{
                         />
 
                         
-                         <Text style={styles.PriceTxt}>{40} Ponits</Text>
+                         <Text style={styles.PriceTxt}>{3600} Ponits</Text>
                          <IconButton 
                           color={colorbtn3}  
                           icon="checkbox-multiple-marked-circle"
                           disabled={isDisabled3}
                           size={35}
-                          onPress={()=>{bookSlot(3,40)}}
+                          onPress={()=>{bookSlot(3,40);setTotalDuration(7200)}}
 
                         />
                       </View>
                      
                       <View style={{flexDirection:"row"}}>
-                          <Text style={styles.PriceTxt}>150 minutes</Text>
+                          <Text style={styles.PriceTxt}> 1.30  hour  </Text>
                           <FontAwesome
                           style={{
                               paddingTop:20
@@ -307,14 +300,14 @@ const SettingScreen=({navigation})=>{
                           icon="checkbox-multiple-marked-circle"
                           disabled={isDisabled4}
                           size={35}
-                          onPress={()=>{bookSlot(4,50)}}
+                          onPress={()=>{bookSlot(4,50);setTotalDuration(5400)}}
 
                         />
                       </View>
                        
 
                       <View style={{flexDirection:"row"}}>
-                          <Text style={styles.PriceTxt}>180 minutes</Text>
+                          <Text style={styles.PriceTxt}>  2  hours   </Text>
                           <FontAwesome
                           style={{
                               paddingTop:20
@@ -331,7 +324,7 @@ const SettingScreen=({navigation})=>{
                           icon="checkbox-multiple-marked-circle"
                           disabled={isDisabled5}
                           size={35}
-                          onPress={()=>{bookSlot(5,20)}}
+                          onPress={()=>{bookSlot(5,20);setTotalDuration(7200)}}
 
                         />
                       </View>
@@ -401,7 +394,7 @@ const SettingScreen=({navigation})=>{
           
           }
          timetoShow={('H', 'M', 'S')}
-         onFinish={() =>{ alert('finished');setIsFinished(true)}}
+         onFinish={() =>{setIsFinished(true)}}
         
          size={21}
        />
@@ -419,8 +412,13 @@ const SettingScreen=({navigation})=>{
           style={styles.button}
           onPress={() =>{setPriceModaleOpen(true);}}
           >
-           <Text style={styles.buttonText}>00:00</Text>
+           <Text style={styles.buttonText}>Extends Time</Text>
           </TouchableOpacity>
+
+          <TouchableOpacity style={styles.cancel_sty}
+            onPress={()=>{setTotalDuration(0);}}>
+              <Text style={{fontSize:15,color:"#043440"}}>Cancel Booking</Text>
+         </TouchableOpacity>
 
       </View>
 
@@ -495,6 +493,26 @@ const styles = StyleSheet.create({
   backgroundColor:'#99d4e9',    
   padding:2,
   alignSelf:'center'
+},
+cancel_sty:{
+  //paddingHorizontal:35,
+  paddingVertical:20,
+  borderRadius:50,
+  marginHorizontal:90,
+  justifyContent:'center',
+  alignItems:'center',
+
+  backgroundColor:"#fbf2fc",
+              
+  shadowColor: "#000",
+  shadowOffset: {
+      width: 0,
+      height: 11,
+  },
+  shadowOpacity: 0.55,
+  shadowRadius: 14.78,
+  
+  elevation: 18,
 },
 
 });

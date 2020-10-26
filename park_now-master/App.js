@@ -1,5 +1,5 @@
+import React, { Component } from 'react';
 import 'react-native-gesture-handler';
-import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
@@ -10,14 +10,33 @@ import Signup from './screens/Signup';
 import SignInScreen from './screens/SignInScreen';
 import ForgetPass from './screens/ForgetPassword';
 import FindMyPosition from './screens/FindMyPosition';
+import { Alert } from 'react-native';
 const Stack = createStackNavigator();
-const isThereUser= true;
+//const pass="hello in app";
 
-const App=()=>{
 
+class App extends Component{
+  constructor(props) {
+    super(props);
+    this.state = { 
+      isThereUser: false,
+     userEmail:"",
+
+     };
+}
+OpenHomePage=()=>{
+  this.setState({isThereUser : true});
+}
+
+setUserEmail=(childData)=>{
+  this.setState({userEmail: childData});
+ // console.log(this.state.userEmail);
+}
+
+  render(){   
   return(
     <NavigationContainer >
-    {!isThereUser?(
+    {!this.state.isThereUser?(
     <Stack.Navigator>
     <Stack.Screen name="Welcom" 
      options={{
@@ -62,8 +81,14 @@ const App=()=>{
         opacity:0.67
       }
     }}
-    component={Signup}   navigation="Sign In" />
+    >
+
+   {(props) => <Signup  {...props}    openHome={this.OpenHomePage}  sendEmail={this.setUserEmail}/>}   
+
+    </Stack.Screen>
     <Stack.Screen name="Sing In"
+  //  props={ navigation="Sign Up"}
+
      options={{
      
     
@@ -82,9 +107,15 @@ const App=()=>{
         height: 50,
         backgroundColor:"#00457C",
         opacity:0.67
+        // navigation={["Sign Up","Forget Password"]}
+        // openHome={[this.OpenHomePage,this.openSignUp]}
       }
     }}
-    component={SignInScreen } navigation={["Sign Up","Forget Password"]}  />
+    
+    >
+
+        {(props) => <SignInScreen  {...props}    openHome={this.OpenHomePage}  sendEmail={this.setUserEmail}/>}   
+      </Stack.Screen>
     <Stack.Screen name="Forget Password"
      options={{
      
@@ -109,9 +140,10 @@ const App=()=>{
     component={ForgetPass }  /> 
     </Stack.Navigator>)
       :
-    <App2 name="HomeStackScreen"/>
+    <App2 name="HomeStackScreen" email={this.state.userEmail}/>
    }
   </NavigationContainer>
-  );
+  );}
 }
+
 export default App;

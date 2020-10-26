@@ -183,21 +183,7 @@ const EditProfileScreen = ({navigation}) => {
             ]}
           />
         </View>
-        <View style={styles.action}>
-          <FontAwesome name="envelope-o" color={colors.text} size={20} />
-          <TextInput
-            placeholder="Email"
-            placeholderTextColor="#666666"
-            keyboardType="email-address"
-            autoCorrect={false}
-            style={[
-              styles.textInput,
-              {
-                color: colors.text,
-              },
-            ]}
-          />
-        </View>
+  
 
 
         <View style={styles.action}>
@@ -250,7 +236,9 @@ const styles = StyleSheet.create({
   commandButton: {
     padding: 8,
     borderRadius: 10,
-    backgroundColor: '#6f1282',
+    height:55,
+    backgroundColor: '#00457C',
+    justifyContent:'center',
     alignItems: 'center',
    // marginTop: 10,
   },
@@ -293,7 +281,7 @@ const styles = StyleSheet.create({
   panelButton: {
     padding: 13,
     borderRadius: 10,
-    backgroundColor: '#c87ed6',
+    backgroundColor: '#5b98c9',
     alignItems: 'center',
     marginVertical: 7,
   },

@@ -35,7 +35,7 @@ const DrawerContent=(props)=>{
                       
                        </View>
                        <View style={ {flexDirection:'column'}}>
-                                <Title style={styles.title}>Zahraa QW</Title>
+                             <Title style={styles.title}>{props.recivedEmail}</Title>
                                 <Caption style={styles.caption}>@j_doe</Caption>
                             </View>
                        </View>

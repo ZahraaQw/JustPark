@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import LinearGradient from 'react-native-linear-gradient';
-import {Text,View,StyleSheet, TextInput,Animated, Dimensions, TouchableOpacity,ScrollView} from 'react-native';
+import {Text,View,StyleSheet, TextInput,Animated, Dimensions, TouchableOpacity,Alert,ScrollView} from 'react-native';
 import { TypingAnimation } from 'react-native-typing-animation';
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import * as Animatable from 'react-native-animatable';
@@ -20,6 +20,15 @@ class Signup extends Component{
             animation_login:new Animated.Value(width-120),
             enable:true,
             disabled_press:false,
+            UserName:'',
+            UserEmail:'',
+            UserPassword:'',
+            UserConPassword:'',
+            good_name:false,
+            good_pass:false,
+            good_conpass:false,
+            good_email:false,
+            disabled_press:true,
 
          };
     }
@@ -117,12 +126,14 @@ class Signup extends Component{
             {
             this.setState({
                 isValidUser:true,
+                good_name:true,
             })
             }
             else{
 
                 this.setState({
                     isValidUser:false,
+                    good_name:false,
                 })
             } 
         }
@@ -131,27 +142,34 @@ class Signup extends Component{
             {
             this.setState({
                 isValidPassword:true,
+                good_pass:true,
+                
             })
             }
             else{
 
                 this.setState({
                     isValidPassword:false,
+                    good_pass:false,
                 })
             }
         }
         else if(type=='conpassword'){
-            if((num.test(text)) && (text.trim().length >7))
+               text.trim();
+            if( text == this.state.UserPassword)
             {
             this.setState({
                 isValidConPassword:true,
+                good_conpass:true,
             })
             }
             else{
-
                 this.setState({
                     isValidConPassword:false,
+                    good_conpass:false,
                 })
+
+
             }
         }
         else  if(type=='email'){
@@ -159,16 +177,51 @@ class Signup extends Component{
             {
             this.setState({
                 isValidEmail:true,
+                good_email:true,
             })
             }
             else{
                 this.setState({
                     isValidEmail:false,
+                    good_email:false,
                 })
             } 
+           }
+        
         }
-        }
-
+        UserRegistrationFunction = () =>{
+ 
+            fetch('http://192.168.1.157/php_parkProj/signup2.php', {
+              method: 'POST',
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+            
+                name: this.state.UserName,
+            
+                email: this.state.UserEmail,
+            
+                password: this.state.UserPassword
+            
+              })
+            
+            }).then((response) => response.json())
+                  .then((responseJson) => {
+        
+                  Alert.alert(responseJson);    
+                  
+               if(responseJson == 'User Registered Successfully'){
+                {this.props.sendEmail(this.state.UserEmail)}
+                {this.props.openHome()}
+            }    
+                  }).catch((error) => {
+                    console.error(error);
+                  });
+           
+          }
+         
 
     render(){
          const width =  this.state.animation_login;
@@ -202,13 +255,14 @@ class Signup extends Component{
         style={{ height:50, width:250,borderColor: 'gray', borderWidth: 1 ,borderRadius:5,marginTop:10,fontSize:12}}
         placeholder="Enter your name"
         onFocus={()=>this._foucus("user")}
-        onChangeText={(text)=>this.validate(text,'username')}
+     
+        onChangeText={(text)=>{this.setState({ UserName: text});this.validate(text,'username');}}
         />
                         
-                     {this.state.typing_user ?
+                {this.state.typing_user ?
                  this._typing()
                   :null }
-                     </View>
+                </View>
                  </View>
                  {this.state.isValidUser ? null :  
                         <Animated.View
@@ -232,7 +286,7 @@ class Signup extends Component{
                     style={{ height:50, width:250,borderColor: 'gray', borderWidth: 1 ,borderRadius:5,marginTop:10,fontSize:12}}
                     placeholder="Enter your email"
                     onFocus={()=>this._foucus("email")}
-                    onChangeText={(text)=>this.validate(text,'email')}
+                    onChangeText={(text)=>{this.setState({UserEmail: text});this.validate(text,'email');}}
                     />
                 
                   {this.state.typing_email ?
@@ -262,10 +316,9 @@ class Signup extends Component{
                     style={{ height:50, width:250,borderColor: 'gray', borderWidth: 1 ,borderRadius:5,marginTop:10,fontSize:12}}
                     placeholder="Enter Password"
                     onFocus={()=>this._foucus("pass")}
-                    onChangeText={(text)=>this.validate(text,'password')}
+                    onChangeText={(text)=>{this.setState({UserPassword : text});this.validate(text,'password');}}
                     />
-                 <TextInput
-                 
+                 <TextInput 
                  style={styles.inputText}
                  onFocus={()=>this._foucus("")}
                  onChangeText={(text)=>this.validate(text,'')}
@@ -296,7 +349,8 @@ class Signup extends Component{
                     style={{ height:50, width:250,borderColor: 'gray', borderWidth: 1 ,borderRadius:5,marginTop:10,marginBottom:30,fontSize:12}}
                     placeholder="Confirm Password"
                     onFocus={()=>this._foucus("passC")}
-                    onChangeText={(text)=>this.validate(text,'conpassword')}
+                 
+                    onChangeText={(text)=>{this.setState({UserConPassword : text});this.validate(text,'conpassword');}}
                     />
                 
          {this.state.typing_conPass ?
@@ -308,16 +362,15 @@ class Signup extends Component{
                     <Animated.View
                         animation="fadeInLeft" duration={500}
                         > 
-                        <Text style={styles.ErrMsg}>Password must be 8 long  . </Text>
+                        <Text style={styles.ErrMsg}>Password not match  . </Text>
                         </Animated.View>
                  }
                  </ScrollView>
-           <TouchableOpacity
-     
-            style={{ opacity:this.state.disabled_press ? 0.5 : 1 }}
-       
-            disabled={this.state.disabled_press}
-           onPress={()=>this._animation()}>
+           <TouchableOpacity   
+             style={{ opacity:!(this.state.good_email && this.state.good_conpass && this.state.good_pass && this.state.good_name) ? 0.5 : 1 }}
+            disabled={!(this.state.isValidEmail && this.state.isValidPassword && this.state.isValidConPassword && this.state.isValidUser)}
+            onPress={()=>{this.UserRegistrationFunction();}}
+           >
             
            <View style={styles.Butt_cont}>
                <Animated.View style={[styles. anmation,{width}]}>
@@ -454,9 +507,6 @@ const width = Dimensions.get("screen").width;
         }
 
      } );
-
-
-
 
 
 

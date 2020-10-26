@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Image,Text,TextInput,TouchableOpacity ,ScrollView,StyleSheet} from "react-native";
+import { View, Image,Text,TextInput,TouchableOpacity,Alert ,ScrollView,StyleSheet} from "react-native";
 
 export default class CreateAccount extends React.Component {
        
@@ -11,6 +11,12 @@ export default class CreateAccount extends React.Component {
             isValidPassword:true,
             isValidEmail:true,
             isValidConPassword:true,
+            Email:'',
+            FirstName:'',
+            LastName:'',
+            UserPass:'',
+            conPass:''
+
          };
     }
    
@@ -88,6 +94,42 @@ export default class CreateAccount extends React.Component {
             } 
         }
         }    
+
+
+        UserRegistrationFunction = () =>{
+
+ 
+            fetch('http://192.168.1.157/php_parkProj/SignUpPayPal.php', {
+              method: 'POST',
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+              },
+             
+              body: JSON.stringify({
+                email: this.state.Email,
+                Firstname: this.state.FirstName,
+                Lastname: this.state.LastName,
+                password: this.state.UserPass
+            
+              })
+            
+            }).then((response) => response.json())
+                  .then((responseJson) => {
+                  if(this.state.isValidFirstName&&this.state.isValidLastName&&this.state.isValidPassword&&this.state.isValidEmail&&this.state.isValidConPassword&&(this.state.UserPass==this.state.conPass)){
+                    console.log(responseJson);
+                    this.props.navigation.navigate("Contact Info");
+                  }else{
+                    Alert.alert("There is an invalid entry. Check it or password does not match");
+                  }
+
+
+           
+                  }).catch((error) => {
+                   console.error(error);
+                  });
+           
+          }
     render() {
         return (
             <View style={{
@@ -109,7 +151,8 @@ export default class CreateAccount extends React.Component {
               <TextInput
                     style={{ height: 45, width:310,borderColor: 'gray', borderWidth: 1 ,borderRadius:5,marginTop:25}}
                     placeholder="Email Address"
-                    onChangeText={(text)=>this.validate(text,'email')}
+                  
+                    onChangeText={(text)=>{this.validate(text,'email');this.setState({Email: text})}}
                     />
                       {this.state.isValidEmail ? null : 
                     <View> 
@@ -119,7 +162,8 @@ export default class CreateAccount extends React.Component {
                   <TextInput
                     style={{ height: 45, width:310,borderColor: 'gray', borderWidth: 1 ,borderRadius:5,marginTop:7}}
                     placeholder="First name"
-                    onChangeText={(text)=>this.validate(text,'firstname')}
+                   
+                    onChangeText={(text)=>{this.validate(text,'firstname');this.setState({FirstName: text})}}
                     />
 
                      {this.state.isValidFirstName ? null : 
@@ -131,7 +175,7 @@ export default class CreateAccount extends React.Component {
                    <TextInput
                     style={{ height: 45, width:310,borderColor: 'gray', borderWidth: 1 ,borderRadius:5,marginTop:7}}
                     placeholder="Last name"
-                    onChangeText={(text)=>this.validate(text,'lastname')}
+                    onChangeText={(text)=>{this.validate(text,'lastname');this.setState({LastName: text})}}
                     />
                     
                     {this.state.isValidLastName ? null : 
@@ -142,7 +186,9 @@ export default class CreateAccount extends React.Component {
                         <TextInput
                     style={{ height: 45, width:310,borderColor: 'gray', borderWidth: 1 ,borderRadius:5,marginTop:7}}
                     placeholder="Password"
-                    onChangeText={(text)=>this.validate(text,'password')}
+              
+                    onChangeText={(text)=>{this.validate(text,'password');
+                    this.setState({UserPass: text})}}
                     />
                        {this.state.isValidPassword ? null : 
                     <View> 
@@ -154,7 +200,10 @@ export default class CreateAccount extends React.Component {
                         <TextInput
                     style={{ height: 45, width:310,borderColor: 'gray', borderWidth: 1 ,borderRadius:5,marginTop:7}}
                     placeholder="Confirm Password"
-                    onChangeText={(text)=>this.validate(text,'conpassword')}
+                   
+                       
+                    onChangeText={(text)=>{this.validate(text,'conpassword');
+                    this.setState({conPass: text})}}
                     />
                      {this.state.isValidConPassword ? null : 
                     <View> 
@@ -164,11 +213,10 @@ export default class CreateAccount extends React.Component {
 
           
                <TouchableOpacity
-                onPress={()=>this.props.navigation.navigate("Contact Info")}
+                   onPress={this.UserRegistrationFunction}
                     style={{ width: 310, height: 45 ,backgroundColor:"#00457C",borderRadius:5, flexDirection:"row",alignItems:"center", justifyContent:"center",marginTop:20}}                
                      > 
                     <Text style={{color:"#fff",textAlign:"center",fontSize:22,paddingLeft:3}}>Next</Text>
-                  
                 </TouchableOpacity>
                 <View style={{flexDirection:"row",alignItems:"center", justifyContent:"center"}}>
                       
