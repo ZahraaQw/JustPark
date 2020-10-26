@@ -210,12 +210,29 @@ class Signup extends Component{
             }).then((response) => response.json())
                   .then((responseJson) => {
         
-                  Alert.alert(responseJson);    
-                  
-               if(responseJson == 'User Registered Successfully'){
-                {this.props.sendEmail(this.state.UserEmail)}
-                {this.props.openHome()}
-            }    
+                    if(responseJson == 'User Registered Successfully'){
+                        Alert.alert(
+                           'Message',
+                           'Singup done successfully!! welcom in parkNow  ',
+                           
+                           [
+                          
+                             { text: 'OK', onPress: () =>{ 
+                               this.props.sendEmail(this.state.UserEmail)
+                               this.props.openHome()
+                                    
+                               } }
+                           ],
+                           { cancelable: false }
+                         )
+                   
+
+              }
+
+              else {
+                      
+                      Alert.alert(responseJson);
+              }
                   }).catch((error) => {
                     console.error(error);
                   });
