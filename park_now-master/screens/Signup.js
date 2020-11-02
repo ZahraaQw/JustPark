@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import LinearGradient from 'react-native-linear-gradient';
-import {Text,View,StyleSheet, TextInput,Animated, Dimensions, TouchableOpacity,Alert,ScrollView} from 'react-native';
+import {Text,View,StyleSheet, TextInput,Animated, Dimensions, TouchableOpacity,Alert,ScrollView,Linking} from 'react-native';
 import { TypingAnimation } from 'react-native-typing-animation';
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import * as Animatable from 'react-native-animatable';
@@ -173,6 +173,7 @@ class Signup extends Component{
             }
         }
         else  if(type=='email'){
+            
             if(email.test(text))
             {
             this.setState({
@@ -186,12 +187,13 @@ class Signup extends Component{
                     good_email:false,
                 })
             } 
+
            }
-        
+  
         }
         UserRegistrationFunction = () =>{
  
-            fetch('http://192.168.1.157/php_parkProj/signup2.php', {
+            fetch('http://192.168.1.157/php_parkProj/SignNew.php', {
               method: 'POST',
               headers: {
                 'Accept': 'application/json',
@@ -385,7 +387,7 @@ class Signup extends Component{
                  </ScrollView>
            <TouchableOpacity   
              style={{ opacity:!(this.state.good_email && this.state.good_conpass && this.state.good_pass && this.state.good_name) ? 0.5 : 1 }}
-            disabled={!(this.state.isValidEmail && this.state.isValidPassword && this.state.isValidConPassword && this.state.isValidUser)}
+            disabled={!(this.state.good_email && this.state.good_conpass && this.state.good_pass && this.state.good_name)}
             onPress={()=>{this.UserRegistrationFunction();}}
            >
             

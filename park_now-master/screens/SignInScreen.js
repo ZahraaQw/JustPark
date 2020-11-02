@@ -116,7 +116,7 @@ class SignInScreen extends Component{
 
             this.setState({
                 isValidPassword:false,
-                good_pass:true
+                good_pass:false
             })
         }
        }
@@ -273,7 +273,7 @@ class SignInScreen extends Component{
            </View>
             <TouchableOpacity
             style={{ opacity:!(this.state.good_email && this.state.good_pass) ? 0.5 : 1 }}
-            disabled={!(this.state.isValidEmail && this.state.isValidPassword)}
+            disabled={!(this.state.good_email && this.state.good_pass)}
 
             onPress={()=>{this.UserRegistrationFunction();}}
 

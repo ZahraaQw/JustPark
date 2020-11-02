@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import{NavigationContainer} from '@react-navigation/native';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import DrawerContent from './DrawerContent';
@@ -15,13 +15,26 @@ import  ContactInfopay from './ContactInfopay';
 import FindPosition from './Find';
 import FindMyPosition from './FindMyPosition';
 import ParkingHistory from './ParkingHistory';
+import Check from './Check';
+import Pay from './Pay';
+
+import PaymentScreen from './PaymentScreen';
+import {Alert} from "react-native";
+
 const Drawer = createDrawerNavigator();
+let Email="";
+
+let Id;
+let name;
+
+
 const App2 =(props)=>{
-     
-    let email= props.email;
+     const[image,setImage]=useState();
+     Email= props.email;
+
     return(
 
-        <Drawer.Navigator drawerContent={props=><DrawerContent {...props}   recivedEmail={email}/>}
+        <Drawer.Navigator drawerContent={props=><DrawerContent {...props}   recivedEmail={Email} recivedimage={image}/>}
 
            drawerContentOptions={
                {
@@ -34,13 +47,17 @@ const App2 =(props)=>{
              backgroundColor:"#ebf6fa",
          
             }
-           //recivedEmail={props.email}
+          
         }
         
         
         >
-
-           <Drawer.Screen name="HomeStackScreen"  component={HomeStackScreen}/>
+           {UserRegistrationFunction()}
+      
+     
+        
+    
+           <Drawer.Screen  name="HomeStackScreen" component={HomeStackScreen}  />
            <Drawer.Screen name="Exit" component={ExitQr }  />
            <Drawer.Screen name="Enter" component={EnterQr } />
            <Drawer.Screen name="Find" component={Find } />
@@ -51,10 +68,39 @@ const App2 =(props)=>{
            <Drawer.Screen name="PayAccount" component={PayPalAccount} navigation="PayAccount"  />
            <Drawer.Screen name="CreateAccount" component={CreateAccount} navigation= "CreateAccount"/>
            <Drawer.Screen name="Contact Info" component={ContactInfopay} navigation= "Contact Info"/>
+           <Drawer.Screen name="pay" component={Pay} navigation= "pay"/>
+           <Drawer.Screen name="check" component={Check} navigation= "check"/>
 
           
         </Drawer.Navigator>
 
     )
 }
+UserRegistrationFunction = () =>{
+ 
+  fetch('http://192.168.1.157/php_parkProj/MyInfo.php', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+    
+      email: Email,
+  
+    
+  
+    })
+  
+  }).then((response) => response.json())
+        .then((responseJson) => {
+
+        }).catch((error) => {
+          console.error(error);
+        });
+ 
+}
+
+
+
 export default App2

@@ -6,7 +6,8 @@ import {
   ImageBackground,
   TextInput,
   StyleSheet,
-  ScrollView
+  ScrollView,
+  Alert
 } from 'react-native';
 
 import {useTheme} from 'react-native-paper';
@@ -23,7 +24,26 @@ import ImagePicker from 'react-native-image-crop-picker';
 const EditProfileScreen = ({navigation}) => {
 
   const [image, setImage] = useState('https://developers.google.com/web/images/contributors/no-photo.jpg');
+  const [city, setCity] = useState("");
+  const[phone,setPhone]=useState("");
+  const[palatte,setPalatte]=useState("");
+  const[Fname,setFname]=useState("");
+  const[Lname,setLname]=useState("");
+  const[email,setEmail]=useState("");
+  const[userName,setUserName]=useState("");
   const {colors} = useTheme();
+
+  const [isValidFname,setIsValidF]=useState(true);
+  const [isValidLname,setIsValidL]=useState(true);
+  const [isValidPhone,setIsValidP]=useState(true);
+  const [isValidCity,setIsValidC]=useState(true);
+  const [isValidPalte,setIsValidN]=useState(true);
+  
+  const[goodFname,setGoodF]=useState(false);
+  const[goodLname,setGoodL]=useState(false);
+  const[goodPhone,setGoodP]=useState(false);
+  const[goodCity,setGoodC]=useState(false);
+  const[goodNumber,setGoodN]=useState(false);
 
   const takePhotoFromCamera = () => {
     ImagePicker.openCamera({
@@ -82,8 +102,134 @@ const EditProfileScreen = ({navigation}) => {
   bs = React.createRef();
   fall = new Animated.Value(1);
 
+  const GetInfo = () =>{
+ 
+    fetch('http://192.168.1.157/php_parkProj/CurrentUser.php', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+    
+      })
+    
+    }).then((response) => response.json())
+          .then((responseJson) => {
+            setEmail(responseJson['email']);
+            setUserName(responseJson['name']);
+          
+        
+          }).catch((error) => {
+            console.error(error);
+          });
+   
+  }
+  const SaveProfileInfo = () =>{
+ 
+    fetch('http://192.168.1.157/php_parkProj/EditProfile.php', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+          email:email,
+          city:city,
+          phone:phone,
+          palatte:palatte,
+          FirstName:Fname,
+          LastName:Lname,
+          image:image,
+ 
+          
+      })
+    
+    }).then((response) => response.json())
+          .then((responseJson) => {
+            Alert.alert(responseJson);
+          }).catch((error) => {
+            console.error(error);
+          });
+   
+  }
+  
+  validate=(text,type)=>{
+
+    alph=/^[a-zA-Z]+$/
+    num=/^[0-9a-zA-Z]+$/
+  //  email=/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+   if(type=='Firstname'){
+    if(alph.test(text))
+    {
+      setIsValidF(true);
+      setGoodF(true);
+    }
+    else{
+
+      setIsValidF(false);
+      setGoodF(false);
+    } 
+}
+
+
+   else  if(type=='Lastname'){
+    if(alph.test(text))
+    {
+      setIsValidL(true);
+      setGoodL(true);
+    }
+    else{
+      setIsValidL(false);
+      setGoodL(true);
+
+    } 
+}
+
+      else if(type=='Phone'){
+      if((num.test(text)) && (text.trim().length == 10))
+      {
+        setIsValidP(true);
+        setGoodP(true);
+      }
+      else{
+        setIsValidP(false);
+        setGoodP(false);
+      }
+      }
+      else   if(type=='carNumber'){
+        if((num.test(text)) && (text.trim().length ==7))
+        {
+          setIsValidN(true);
+          setGoodN(true);
+     
+        }
+        else{
+          setIsValidN(false);
+          setGoodN(false);
+
+        }
+         
+    
+       }
+
+       else  if(type=='city'){
+        if(alph.test(text))
+        {
+          setIsValidC(true); 
+          setGoodC(true);    
+           }
+        else{
+          setIsValidC(false);    
+          setGoodC(false);    
+  
+        } 
+    }
+
+  }
   return (
       <ScrollView  style={styles.container}>
+        {GetInfo()}
       <BottomSheet
         ref={this.bs}
         snapPoints={[330, 0]}
@@ -136,7 +282,7 @@ const EditProfileScreen = ({navigation}) => {
             </View>
           </TouchableOpacity>
           <Text style={{marginTop: 10, fontSize: 18, fontWeight: 'bold'}}>
-            Islam Mohammed
+            {userName}
           </Text>
         </View>
       
@@ -152,8 +298,16 @@ const EditProfileScreen = ({navigation}) => {
                 color: colors.text,
               },
             ]}
+            onChangeText={(text)=>{setFname(text);validate(text,'Firstname')}}
           />
         </View>
+                {isValidFname ? null :  
+                       <Animated.View
+                       animation="fadeInLeft" duration={500}> 
+                   <Text style={styles.ErrMsg}>FirstName must be  just character</Text>
+                   </Animated.View>
+                    }
+                 
         <View style={styles.action}>
           <FontAwesome name="user-o" color={colors.text} size={20} />
           <TextInput
@@ -166,8 +320,15 @@ const EditProfileScreen = ({navigation}) => {
                 color: colors.text,
               },
             ]}
+            onChangeText={(text)=>{setLname(text);validate(text,'Lastname')}}
           />
         </View>
+        {isValidLname ? null :  
+                       <Animated.View
+                       animation="fadeInLeft" duration={500}> 
+                   <Text style={styles.ErrMsg}>LastName must be  just character</Text>
+                   </Animated.View>
+                    }
         <View style={styles.action}>
           <Feather name="phone" color={colors.text} size={20} />
           <TextInput
@@ -181,9 +342,15 @@ const EditProfileScreen = ({navigation}) => {
                 color: colors.text,
               },
             ]}
+            onChangeText={(text)=>{setPhone(text);validate(text,'Phone')}}
           />
         </View>
-  
+        {isValidPhone ? null :  
+                       <Animated.View
+                       animation="fadeInLeft" duration={500}> 
+                   <Text style={styles.ErrMsg}>Phone number should be 10 digit</Text>
+                   </Animated.View>
+                    }
 
 
         <View style={styles.action}>
@@ -198,8 +365,15 @@ const EditProfileScreen = ({navigation}) => {
                 color: colors.text,
               },
             ]}
+            onChangeText={(text)=>{setPalatte(text);validate(text,'carNumber')}}
           />
         </View>
+        {isValidPalte ? null :  
+                       <Animated.View
+                       animation="fadeInLeft" duration={500}> 
+                   <Text style={styles.ErrMsg}>Car palette number must be 7 long </Text>
+                   </Animated.View>
+                    }
         <View style={styles.action}>
           <FontAwesome name="globe" color={colors.text} size={20} />
           <TextInput
@@ -212,12 +386,21 @@ const EditProfileScreen = ({navigation}) => {
                 color: colors.text,
               },
             ]}
+            onChangeText={(text)=>{setCity(text);validate(text,'city')}}
           />
         </View>
-       
-        <TouchableOpacity style={styles.commandButton} onPress={() => {}}
-        
-        disabled={true}>
+        {isValidCity? null :  
+          <Animated.View
+          animation="fadeInLeft" duration={500}> 
+      <Text style={styles.ErrMsg}>City name must be just character  </Text>
+      </Animated.View>
+      }
+      
+        <TouchableOpacity style={styles.commandButton} 
+            style={[styles.commandButton,{ opacity:!(goodFname && goodLname && goodPhone && goodCity && goodNumber) ? 0.5 : 1 }]}
+            disabled={!(goodFname && goodLname && goodPhone && goodCity && goodNumber)}
+             onPress={() => {SaveProfileInfo()}}>
+
           <Text style={styles.panelButtonTitle}>Submit</Text>
         </TouchableOpacity>
       </Animated.View>
@@ -300,10 +483,10 @@ const styles = StyleSheet.create({
   },
   actionError: {
     flexDirection: 'row',
-    marginTop: 10,
+   // marginTop: 5,
     borderBottomWidth: 1,
     borderBottomColor: '#FF0000',
-    paddingBottom: 5,
+    paddingBottom: 3,
   },
   textInput: {
     flex: 1,
@@ -311,4 +494,10 @@ const styles = StyleSheet.create({
     paddingLeft: 30,
     color: '#05375a',
   },
+  ErrMsg:{
+    color:"#c90c16",
+    fontSize:10,
+    paddingLeft:30,
+
+}
 });

@@ -1,5 +1,5 @@
-import React from 'react';
-import {Text,View,StyleSheet, Button} from 'react-native';
+import React, { useState } from 'react';
+import {Text,View,StyleSheet, Button,Alert} from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/dist/FontAwesome';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
@@ -10,7 +10,13 @@ import ProfilScreen from "./ProfilScreen";
 import SettingScreen from "./SettingScreen";
 import PaymentScreen from "./PaymentScreen";
 
+
 const HomeStack = createStackNavigator();
+
+ function goProfile(){
+   console.log("goprofile");
+return Selected;
+}
 
 function HomeStackScreen({navigation}) {
   return (
@@ -93,9 +99,19 @@ function SettingsStackScreen({navigation}) {
 const ProfilStackScreen = createStackNavigator();
 //const EditProfilStackScreen = createStackNavigator();
 
-function ProfStackScreen({navigation}) {
+function ProfStackScreen({navigation,props}) {
+  const [Selected,setSelected]=useState(false);
+
+  onSelect = () => {
+    //Selected=data;
+   // goProfile();
+   setSelected(true);
+  };
+  SelectedDone=()=>{
+    return Selected;
+  }
   return (
-    <ProfilStackScreen.Navigator
+    <ProfilStackScreen.Navigator 
     screenOptions ={{
       headerStyle:{
         backgroundColor:"#00457C",   
@@ -113,7 +129,10 @@ function ProfStackScreen({navigation}) {
 
    }}
     >
-      <ProfilStackScreen.Screen name="My Profile" component={ProfilScreen} options={{
+
+      <ProfilStackScreen.Screen name="My Profile" //component={ProfilScreen} 
+       
+      options={{
     headerLeft: () => (
       <View style={{marginLeft: 20}}>
         <Icon.Button
@@ -133,18 +152,23 @@ function ProfStackScreen({navigation}) {
           size={25}
           color='#99d4e9'
           backgroundColor="#00457C"
-          onPress={() => navigation.navigate("EditProfile")}
+          onPress={() =>{setSelected(false);navigation.navigate("EditProfile",{onSelect:onSelect });
+         
+        }}
         />
       </View>
+      
     ), 
   
   }} 
     
  
-    />
-     
-    </ProfilStackScreen.Navigator>
+    >
+  {(props) => <ProfilScreen  {...props}   SelectedDone={SelectedDone} />}   
 
+    </ProfilStackScreen.Screen>
+    </ProfilStackScreen.Navigator>
+  
        
     
   );
@@ -219,7 +243,7 @@ export default function MainScreen({navigation}) {
             />
         
     
-
+ 
          <Tab.Screen
             name="Profile"
             component={ProfStackScreen}

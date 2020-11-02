@@ -5,7 +5,14 @@ import {View} from 'react-native';
 import Icon from 'react-native-vector-icons/dist/FontAwesome';
 
 const EditStack = createStackNavigator();
-const Create=({navigation})=>{
+const Create =({navigation, route })=>{
+
+ const goBack=()=>{
+  
+    navigation.goBack();
+    route.params.onSelect();
+
+  }
     return(
       
         <EditStack.Navigator
@@ -34,7 +41,7 @@ const Create=({navigation})=>{
               size={25}
               color='#99d4e9'
               backgroundColor="#00457C"
-              onPress={() => navigation.goBack()}
+              onPress={()=>{goBack()}}
             />
           </View>
         ),}}/>

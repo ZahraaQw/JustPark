@@ -1,8 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect} from 'react';
 import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
 import {View,Text,StyleSheet,TouchableOpacity} from 'react-native';
 
-import LinearGradient from 'react-native-linear-gradient';
 import {
     useTheme,
     Avatar,
@@ -12,31 +11,64 @@ import {
     Drawer,
     Switch
 } from 'react-native-paper';
-//import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon from 'react-native-vector-icons/dist/FontAwesome';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const DrawerContent=(props)=>{
+       let  email= props.recivedEmail;
+     //  let image=props.recivedimage;
 
+      const[image,setImage]=useState();
+
+
+       const GetInfo = () =>{
+ 
+        fetch('http://192.168.1.157/php_parkProj/CurrentUser.php', {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+        
+          })
+        
+        }).then((response) => response.json())
+              .then((responseJson) => {
+            
+               setImage(responseJson['image']);
+               console.log(image);
+              
+            
+              }).catch((error) => {
+                console.error(error);
+              });
+       
+      }
+      useEffect(() => {
+        GetInfo();     
+       }, [])
+      
     return(
         <View style={{flex:1}}>
             <DrawerContentScrollView{...props}>
-              
-   
              <TouchableOpacity style={ styles.container }>
              <View style={styles.drawerContent}>
                     <View style={styles.userInfoSection}>
                         <View style={{flexDirection:'row'}}>
+                  
                         <Avatar.Image 
-                                 source={require('./avatar.png')} 
+                      source={{
+                    uri:image==""?'https://developers.google.com/web/images/contributors/no-photo.jpg':image,
+                   // uri:'file:///storage/emulated/0/Android/data/com.parking/files/Pictures/705525c5-f626-4798-a894-41f6d99304f1.jpg'
+                                      }}
                                 size={70}
                             />
                            
                       
                        </View>
                        <View style={ {flexDirection:'column'}}>
-                             <Title style={styles.title}>{props.recivedEmail}</Title>
-                                <Caption style={styles.caption}>@j_doe</Caption>
+                             <Title style={styles.title}>{email.split("@")[0].trim() || ''}</Title>
+                                <Caption style={styles.caption}>{"@"+ email.split("@")[1].trim() || ''}</Caption>
                             </View>
                        </View>
                        </View>
@@ -185,7 +217,7 @@ const styles = StyleSheet.create({
       fontSize: 14,
       lineHeight: 14,
       color:"#99D4E9",
-      paddingLeft:22
+      paddingLeft:8
     },
     drawerSection: {
       marginTop: 5,

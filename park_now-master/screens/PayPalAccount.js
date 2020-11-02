@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Image,Text,TextInput,TouchableOpacity ,StyleSheet} from "react-native";
+import { View, Image,Text,TextInput,TouchableOpacity ,StyleSheet,Alert} from "react-native";
 
 export default class PayPalAccount extends React.Component {
    
@@ -7,7 +7,12 @@ export default class PayPalAccount extends React.Component {
         super(props);
         this.state = { 
             isValidPassword:true,
-            isValidEmail:true,       
+            isValidEmail:true,  
+            good_pass:false,
+            good_email:false,  
+            UserPass:'',
+            Email:'', 
+          //  Points:''  
          };
     
         }
@@ -21,12 +26,14 @@ export default class PayPalAccount extends React.Component {
             {
             this.setState({
                 isValidEmail:true,
+                good_email:true,
             })
             }
             else{
 
                 this.setState({
                     isValidEmail:false,
+                    good_email:false,
                 })
             } 
         }
@@ -35,19 +42,54 @@ export default class PayPalAccount extends React.Component {
             {
             this.setState({
                 isValidPassword:true,
+                good_pass:true,
             })
             }
             else{
 
                 this.setState({
                     isValidPassword:false,
+                    good_pass:false,
                 })
             }
         }
 
 
         }
-   
+        UserRegistrationFunction = () =>{
+ 
+            fetch('http://192.168.1.157/php_parkProj/loginPay.php', {
+              method: 'POST',
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+           
+           
+                email: this.state.Email,
+            
+                password: this.state.UserPass
+            
+              })
+            
+            }).then((response) => response.json())
+                  .then((responseJson) => {
+                   if(responseJson == 'Login success'){
+                
+                  this.props.navigation.navigate("pay",{Points:this.props.route.params.Points});
+                   }
+                   else  {
+         
+                       Alert.alert("User name or password is incorrect");
+    
+                   }
+            
+                  }).catch((error) => {
+                    console.error(error);
+                  });
+           
+          }   
 
 
 
@@ -77,7 +119,7 @@ export default class PayPalAccount extends React.Component {
               <TextInput
                     style={{ height: 45, width:310,borderColor: 'gray', borderWidth: 1 ,borderRadius:5,marginTop:25}}
                     placeholder="Enter Your Email"
-                    onChangeText={(text)=>this.validate(text,'email')}
+                    onChangeText={(text)=>{this.validate(text,'email');this.setState({Email: text})}}
                     />
                  {this.state.isValidEmail ? null : 
                     <View> 
@@ -90,7 +132,7 @@ export default class PayPalAccount extends React.Component {
                    secureTextEntry
                     style={{ height: 45, width:310,borderColor: 'gray', borderWidth: 1 ,borderRadius:5,marginTop:7,}}
                     placeholder="Enter Your Password"
-                    onChangeText={(text)=>this.validate(text,'password')}
+                    onChangeText={(text)=>{this.validate(text,'password');this.setState({UserPass: text})}}
                     />
 
                         {this.state.isValidPassword ? null : 
@@ -100,7 +142,10 @@ export default class PayPalAccount extends React.Component {
                         }
 
                <TouchableOpacity
-                    style={{ width: 310, height: 45 ,backgroundColor:"#00457C",borderRadius:5, flexDirection:"row",alignItems:"center", justifyContent:"center",marginTop:15}}                
+              
+                  style={{ opacity:!(this.state.good_pass && this.state.good_email) ? 0.5 : 1, width: 310, height: 45 ,backgroundColor:"#00457C",borderRadius:5, flexDirection:"row",alignItems:"center", justifyContent:"center",marginTop:15}}   
+                  disabled={!(this.state.good_pass && this.state.good_email)}            
+                  onPress={()=>{this.UserRegistrationFunction();}}    
                      > 
                     <Text style={{color:"#fff",textAlign:"center",fontSize:22,paddingLeft:3}}> Log In</Text>
                   
@@ -127,9 +172,10 @@ export default class PayPalAccount extends React.Component {
                 />
                 </View>
                 <TouchableOpacity
-                    
                     onPress={()=>this.props.navigation.navigate("CreateAccount")}
-                    style={{ width: 310, height: 45 ,backgroundColor:"#C0C0C0",borderRadius:5, flexDirection:"row",alignItems:"center", justifyContent:"center",marginTop:30}}                
+                   
+                    style={{ width: 310, height: 45 ,backgroundColor:"#C0C0C0",borderRadius:5, flexDirection:"row",alignItems:"center", justifyContent:"center",marginTop:30}}    
+                            
                      > 
                     <Text style={{color:"#fff",textAlign:"center",fontSize:22,paddingLeft:3}}>Create Account</Text>
                   
@@ -174,6 +220,7 @@ const styles = StyleSheet.create({
         color:"red",
         fontSize:12,
         marginTop:1,
+      
       
     }
 

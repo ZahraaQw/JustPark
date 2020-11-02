@@ -1,6 +1,5 @@
-import React from 'react';
-
-import {View, SafeAreaView, StyleSheet,ScrollView,Button} from 'react-native';
+import React, { useState,useEffect } from 'react';
+import {View, SafeAreaView, StyleSheet,ScrollView,Button, Alert} from 'react-native';
 import {
   Avatar,
   Title,
@@ -13,16 +12,77 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 
 
-
-const ProfilScreen=({navigation})=>{
-    return (
-        <ScrollView style={styles.container}>
+const ProfilScreen=(props)=>{
     
+ // const[id,setId]=useState("");
+ //let Selected=false;
+
+  const[name,setName]=useState("");
+  const[Email,setEmail]=useState("");
+  const[city,setCity]=useState("");
+  const[phone,setPhone]=useState("");
+  const[palatte,setPalatte]=useState("");
+  const[Image,setImage]=useState();
+
+  const GetInfo = () =>{
+ 
+    fetch('http://192.168.1.157/php_parkProj/CurrentUser.php', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+             
+      })
+    
+    }).then((response) => response.json())
+          .then((responseJson) => {
+         
+           // setId(responseJson['id']);
+           setImage(responseJson['image']);
+            setName(responseJson['name']);
+            setEmail(responseJson['email']);
+            setCity(responseJson['city']);
+            setPhone(responseJson['phone']);
+            setPalatte(responseJson['palette']);
+           
+           console.log(Image);
+           
+          }).catch((error) => {
+            console.error(error);
+          });
+
+          
+   
+  }
+
+
+     const Refrech =()=>{
+ 
+      GetInfo();
+  
+     }
+
+  
+    return (
+
+       
+        <ScrollView style={styles.container}>
+
+            { 
+        
+            GetInfo(),
+             props.SelectedDone() ? Refrech():null
+         
+            }
+
+          
           <View style={styles.userInfoSection}>
             <View style={{flexDirection: 'row', marginTop: 20}}>
               <Avatar.Image 
                 source={{
-                  uri: 'https://developers.google.com/web/images/contributors/no-photo.jpg',
+               uri:Image !=""?Image:'https://developers.google.com/web/images/contributors/no-photo.jpg',
                 }}
                 size={80}
               />
@@ -30,8 +90,8 @@ const ProfilScreen=({navigation})=>{
                 <Title style={[styles.title, {
                   marginTop:30,
                   marginBottom:0,
-                }]}>Islam Mohammed</Title>
-                <Caption style={styles.caption}>@I_moh</Caption>
+                }]}>{Email.split("@")[0].trim() || ''}</Title>
+                <Caption style={styles.caption}>@gmail.com</Caption>
               </View>
             </View>
           </View>
@@ -43,19 +103,19 @@ const ProfilScreen=({navigation})=>{
           <View style={styles.userInfoSection}>
             <View style={styles.row}>
             <FontAwesome name="globe"  color="#65808a" size={20} />
-              <Text style={styles.txt}>jalood, Nablus</Text>
+              <Text style={styles.txt}>{city}</Text>
             </View>
             <View style={styles.row}>
               <Icon name="phone" color="#65808a" size={20}/>
-              <Text style={styles.txt}>+91-900000009</Text>
+              <Text style={styles.txt}>{phone}</Text>
             </View>
             <View style={styles.row}>
             <FontAwesome name="envelope-o"  color="#65808a"  size={20} />
-              <Text style={styles.txt}>islam_moh@email.com</Text>
+              <Text style={styles.txt}>{Email}</Text>
             </View>
             <View style={styles.row}>
             <FontAwesome name="car"  color="#65808a" size={20} />
-              <Text style={styles.txt}>795-258-187</Text>
+              <Text style={styles.txt}>{palatte}</Text>
             </View>
           </View>
     
@@ -72,7 +132,10 @@ const ProfilScreen=({navigation})=>{
         </ScrollView>
       );
     };
-    
+
+  
+   
+
     export default ProfilScreen;
     
     const styles = StyleSheet.create({

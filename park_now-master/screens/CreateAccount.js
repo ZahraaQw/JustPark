@@ -15,7 +15,13 @@ export default class CreateAccount extends React.Component {
             FirstName:'',
             LastName:'',
             UserPass:'',
-            conPass:''
+            conPass:'',
+            good_fname:false,
+            good_lname:false,
+            good_pass:false,
+            good_conpass:false,
+            good_email:false,
+            disabled_press:true,
 
          };
     }
@@ -29,12 +35,14 @@ export default class CreateAccount extends React.Component {
             {
             this.setState({
                 isValidFirstName:true,
+                good_fname:true,
             })
             }
             else{
 
                 this.setState({
                     isValidFirstName:false,
+                    good_fname:false,
                 })
             } 
         }
@@ -43,12 +51,14 @@ export default class CreateAccount extends React.Component {
             {
             this.setState({
                 isValidLastName:true,
+                good_lname:true,
             })
             }
             else{
 
                 this.setState({
                     isValidLastName:false,
+                    good_lname:false,
                 })
             } 
         }
@@ -57,26 +67,41 @@ export default class CreateAccount extends React.Component {
             {
             this.setState({
                 isValidPassword:true,
+                good_pass:true,
             })
             }
             else{
 
                 this.setState({
                     isValidPassword:false,
+                    good_pass:false,
                 })
             }
-        }
-        else if(type=='conpassword'){
-            if((num.test(text)) && (text.trim().length >7))
+        }/*
+        
+          text.trim();
+            if( text == this.state.UserPassword)
             {
             this.setState({
                 isValidConPassword:true,
+                good_conpass:true,
             })
             }
+        */
+        else if(type=='conpassword'){
+            if((num.test(text)) && (text.trim().length >7))
+            {
+          if( text == this.state.UserPass){
+            this.setState({
+                isValidConPassword:true,
+                good_conpass:true,
+            })
+            }}
             else{
 
                 this.setState({
                     isValidConPassword:false,
+                    good_conpass:false,
                 })
             }
         }
@@ -85,11 +110,13 @@ export default class CreateAccount extends React.Component {
             {
             this.setState({
                 isValidEmail:true,
+                good_email:true,
             })
             }
             else{
                 this.setState({
                     isValidEmail:false,
+                    good_email:false,
                 })
             } 
         }
@@ -116,12 +143,14 @@ export default class CreateAccount extends React.Component {
             
             }).then((response) => response.json())
                   .then((responseJson) => {
-                  if(this.state.isValidFirstName&&this.state.isValidLastName&&this.state.isValidPassword&&this.state.isValidEmail&&this.state.isValidConPassword&&(this.state.UserPass==this.state.conPass)){
-                    console.log(responseJson);
-                    this.props.navigation.navigate("Contact Info");
-                  }else{
-                    Alert.alert("There is an invalid entry. Check it or password does not match");
-                  }
+                    if(responseJson=="User Registered Successfully"){
+                   this.props.navigation.navigate("Contact Info",{ContactEmail:this.state.Email});
+                 
+                    }
+                    else{
+                        Alert.alert(responseJson);
+                    }
+                  
 
 
            
@@ -186,7 +215,7 @@ export default class CreateAccount extends React.Component {
                         <TextInput
                     style={{ height: 45, width:310,borderColor: 'gray', borderWidth: 1 ,borderRadius:5,marginTop:7}}
                     placeholder="Password"
-              
+                    secureTextEntry
                     onChangeText={(text)=>{this.validate(text,'password');
                     this.setState({UserPass: text})}}
                     />
@@ -200,22 +229,23 @@ export default class CreateAccount extends React.Component {
                         <TextInput
                     style={{ height: 45, width:310,borderColor: 'gray', borderWidth: 1 ,borderRadius:5,marginTop:7}}
                     placeholder="Confirm Password"
-                   
+                    secureTextEntry
                        
                     onChangeText={(text)=>{this.validate(text,'conpassword');
                     this.setState({conPass: text})}}
                     />
                      {this.state.isValidConPassword ? null : 
                     <View> 
-                        <Text style={styles.ErrMsg}>Password must be 8 long  . </Text>
+                        <Text style={styles.ErrMsg}>Password must be 8 long or must Password not match  . </Text>
                         </View>
                  }
 
           
-               <TouchableOpacity
-                   onPress={this.UserRegistrationFunction}
-                    style={{ width: 310, height: 45 ,backgroundColor:"#00457C",borderRadius:5, flexDirection:"row",alignItems:"center", justifyContent:"center",marginTop:20}}                
-                     > 
+               <TouchableOpacity      
+                style={{ opacity:!(this.state.good_email && this.state.good_conpass && this.state.good_pass && this.state.good_lname&&this.state.good_fname) ? 0.5 : 1,width: 310, height: 45 ,backgroundColor:"#00457C",borderRadius:5, flexDirection:"row",alignItems:"center", justifyContent:"center",marginTop:20}}                
+                disabled={!(this.state.good_email && this.state.good_conpass && this.state.good_pass && this.state.good_lname&&this.state.good_fname)}
+                onPress={this.UserRegistrationFunction}
+                    > 
                     <Text style={{color:"#fff",textAlign:"center",fontSize:22,paddingLeft:3}}>Next</Text>
                 </TouchableOpacity>
                 <View style={{flexDirection:"row",alignItems:"center", justifyContent:"center"}}>

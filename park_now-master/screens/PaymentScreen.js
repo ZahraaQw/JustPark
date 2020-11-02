@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Text, TouchableOpacity, Modal,TextInput, StyleSheet,Image} from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 import Icon from 'react-native-vector-icons/dist/FontAwesome';
 
 export default class PaymentScreen extends React.Component {
@@ -9,6 +10,7 @@ export default class PaymentScreen extends React.Component {
         this.state = {
             text:" ",
             isValidNumber:true,
+            good_Points:false, 
            
          };
     }
@@ -16,16 +18,18 @@ export default class PaymentScreen extends React.Component {
       
     validate(text){
      num=/[0-9]+$/
-     if(num.test(text))
+     if(num.test(text)&&(text.trim().length<5))
      {
      this.setState({
         isValidNumber:true,
+        good_Points:true, 
      })
      }
      else{
 
          this.setState({
             isValidNumber:false,
+            good_Points:false, 
          })
      } 
 
@@ -40,7 +44,7 @@ export default class PaymentScreen extends React.Component {
                 style={styles.stretch}
                 source={require('../assets/paypal2.png')}
               />
-             
+             <ScrollView>
                 <View style={{  
                                 justifyContent:"center",
                                 alignItems:"center",
@@ -54,18 +58,16 @@ export default class PaymentScreen extends React.Component {
                                
                                }}>
                    
-                    <Text style={{fontSize:22,color:"#696969", marginTop:30}}>Pay 1₪ To Get 10 Points... </Text>
-                            <Text style={{fontSize:12,color:"#C0C0C0", marginVertical:5}}>Points {this.state.text} need {(this.state.text)/10} ₪</Text>
+                    <Text style={{fontSize:22,color:"#696969", marginTop:30}}>Pay 5₪ To Get 10 Points... </Text>
+                            <Text style={{fontSize:12,color:"#C0C0C0", marginVertical:5}}>Points {this.state.text} need {(5*(this.state.text))/10} ₪</Text>
                     <TextInput
                     style={{ height: 50, width:300,borderColor: 'gray', borderWidth: 1 ,borderRadius:5,marginTop:10,}}
                     placeholder="Enter Number of Points"
         
-                    onChangeText={this.handleInputTextChange} 
-                    onChangeText={(text)=>this.validate(text)}
+                    
                      
                     onChangeText={text => this.setState({ text },
                         () => this.validate(text))}
-
 
                     />
                    {this.state.isValidNumber ? null :  
@@ -74,8 +76,9 @@ export default class PaymentScreen extends React.Component {
                     </View>
                     }
                    <TouchableOpacity
-                    style={{ width: 300, height: 50 ,backgroundColor:"#00457C",borderRadius:5, flexDirection:"row",alignItems:"center", justifyContent:"center",marginTop:10}}                
-                    onPress={()=>this.props.navigation.navigate("PayAccount")}
+                    style={{ opacity:!(this.state.good_Points)? 0.5 : 1,width: 300, height: 50 ,backgroundColor:"#00457C",borderRadius:5, flexDirection:"row",alignItems:"center", justifyContent:"center",marginTop:10}}                
+                    disabled={!(this.state.good_Points)}    
+                    onPress={()=>this.props.navigation.navigate("PayAccount",{Points:5*this.state.text/10})}
                      >
                       <Icon style={{color:"#00BFFF"}} name='paypal'  size={22} />
                     <Text style={{color:"#fff",textAlign:"center",fontSize:22,paddingLeft:3}}> PayPal</Text>
@@ -83,6 +86,7 @@ export default class PaymentScreen extends React.Component {
                 </TouchableOpacity>
                
                 </View>
+                </ScrollView>
               
             </View>
         );
